@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pintar Pendidikan Islam Tahun 2</title>
+    
+    <!-- Fonts for UI and Jawi/Arabic -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        jawi: ['Amiri', 'serif'],
+                    },
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        danger: '#EF4444',
+                        jawiBg: '#FDF8E1'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS for Animations and Jawi Formatting -->
+    <style>
+        body { background-color: #F3F4F6; font-family: 'Nunito', sans-serif; }
+        .jawi-text { font-family: 'Amiri', serif; direction: rtl; font-size: 1.75rem; line-height: 2.5rem; }
+        .jawi-text-lg { font-family: 'Amiri', serif; direction: rtl; font-size: 2.5rem; line-height: 3.5rem; }
+        
+        .bounce-in { animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .pulse-correct { animation: pulseGreen 1s ease-in-out; }
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .shake-wrong { animation: shakeRed 0.5s ease-in-out; }
+        @keyframes shakeRed {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .card-hover { transition: all 0.2s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        
+        /* Specific utility for matching lines if needed, using borders for simplicity */
+        .selected-match { border: 4px solid #F59E0B; transform: scale(1.05); }
+        .matched { opacity: 0.5; pointer-events: none; border-color: #10B981; background-color: #D1FAE5;}
+    </style>
+
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Data Kandungan Buku Teks Pendidikan Islam Tahun 2 (Dikemas kini dengan 10 soalan/unit)
+        const syllabusData = [
+            {
+                id: 'alquran', title: 'Al-Quran', icon: '📖', color: 'bg-blue-500',
+                units: [
+                    {
+                        id: 'q_t1', title: 'Tilawah: Surah An-Nas',
+                        games: [
+                            { type: 'sequence', question: 'Susun ayat pertama hingga ketiga Surah An-Nas.', items: ['قُلْ أَعُوذُ بِرَبِّ النَّاسِ', 'مَلِكِ النَّاسِ', 'إِلَهِ النَّاسِ'], answer: ['قُلْ أَعُوذُ بِرَبِّ النَّاسِ', 'مَلِكِ النَّاسِ', 'إِلَهِ النَّاسِ'] },
+                            { type: 'sequence', question: 'Susun ayat keempat hingga keenam Surah An-Nas.', items: ['مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ', 'الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ', 'مِنَ الْجِنَّةِ وَالنَّاسِ'], answer: ['مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ', 'الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ', 'مِنَ الْجِنَّةِ وَالنَّاسِ'] },
+                            { type: 'quiz', question: 'Apakah maksud perkataan "An-Nas"?', options: ['Manusia', 'Masa', 'Bintang'], answer: 'Manusia' },
+                            { type: 'quiz', question: 'Surah An-Nas diturunkan di kota mana?', options: ['Makkah', 'Madinah', 'Mesir'], answer: 'Makkah' },
+                            { type: 'quiz', question: 'Surah An-Nas mengandungi berapa ayat?', options: ['5 ayat', '6 ayat', '7 ayat'], answer: '6 ayat' },
+                            { type: 'quiz', question: 'Lengkapkan ayat: قُلْ أَعُوذُ بِرَبِّ ______', options: ['النَّاسِ', 'الْفَلَقِ', 'الْأَحَدِ'], answer: 'النَّاسِ', isJawiAnswer: true },
+                            { type: 'match', question: 'Padankan potongan ayat Surah An-Nas.', pairs: [{a: 'الَّذِي يُوَسْوِسُ', b: 'فِي صُدُورِ النَّاسِ'}, {a: 'مِن شَرِّ الْوَسْوَاسِ', b: 'الْخَنَّاسِ'}] },
+                            { type: 'quiz', question: 'Membaca Surah An-Nas dapat melindungi kita daripada godaan...', options: ['Malaikat', 'Syaitan dan Jin', 'Haiwan'], answer: 'Syaitan dan Jin' },
+                            { type: 'quiz', question: 'Apakah hukum membaca Al-Quran dengan tajwid yang betul?', options: ['Sunat', 'Wajib', 'Harus'], answer: 'Wajib' },
+                            { type: 'match', question: 'Padankan kalimah dengan baris yang betul.', pairs: [{a: 'إِلَهِ النَّاسِ', b: 'Ayat 3'}, {a: 'مِنَ الْجِنَّةِ وَالنَّاسِ', b: 'Ayat 6'}] }
+                        ]
+                    },
+                    {
+                        id: 'q_t2', title: 'Tilawah: Surah Al-Falaq',
+                        games: [
+                            { type: 'sequence', question: 'Susun ayat pertama hingga ketiga Surah Al-Falaq.', items: ['قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ', 'مِن شَرِّ مَا خَلَقَ', 'وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ'], answer: ['قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ', 'مِن شَرِّ مَا خَلَقَ', 'وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ'] },
+                            { type: 'quiz', question: 'Apakah sambungan ayat: قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...', options: ['مِن شَرِّ مَا خَلَقَ', 'إِلَهِ النَّاسِ', 'إِذَا وَقَبَ'], answer: 'مِن شَرِّ مَا خَلَقَ', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Surah Al-Falaq mempunyai berapa ayat?', options: ['4 ayat', '5 ayat', '6 ayat'], answer: '5 ayat' },
+                            { type: 'quiz', question: 'Apakah maksud Al-Falaq?', options: ['Waktu Subuh', 'Manusia', 'Malam'], answer: 'Waktu Subuh' },
+                            { type: 'match', question: 'Padankan potongan ayat Surah Al-Falaq.', pairs: [{a: 'وَمِن شَرِّ حَاسِدٍ', b: 'إِذَا حَسَدَ'}, {a: 'وَمِن شَرِّ غَاسِقٍ', b: 'إِذَا وَقَبَ'}] },
+                            { type: 'quiz', question: 'Lengkapkan: وَمِن شَرِّ النَّفَّاثَاتِ فِي ______', options: ['الْعُقَدِ', 'حَسَدَ', 'وَقَبَ'], answer: 'الْعُقَدِ', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Surah Al-Falaq tergolong dalam surah...', options: ['Madaniyyah', 'Makkiyyah', 'Qudsiyyah'], answer: 'Makkiyyah' },
+                            { type: 'match', question: 'Padankan kalimah.', pairs: [{a: 'الْفَلَقِ', b: 'Al-Falaq'}, {a: 'الْعُقَدِ', b: 'Al-Uqad'}] },
+                            { type: 'sequence', question: 'Susun ayat keempat dan kelima Surah Al-Falaq.', items: ['وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ', 'وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ'], answer: ['وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ', 'وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ'] },
+                            { type: 'quiz', question: 'Surah Al-Falaq sering dibaca bersama surah apa untuk perlindungan?', options: ['Surah Al-Kautsar', 'Surah An-Nas', 'Surah Al-Asr'], answer: 'Surah An-Nas' }
+                        ]
+                    },
+                    {
+                        id: 'q_taj1', title: 'Tajwid: Kenali Mad Asli',
+                        games: [
+                            { type: 'quiz', question: 'Mad Asli dibaca dengan kadar berapa harakat?', options: ['2 harakat', '4 harakat', '6 harakat'], answer: '2 harakat' },
+                            { type: 'quiz', question: 'Berapakah huruf Mad Asli?', options: ['2 huruf', '3 huruf', '4 huruf'], answer: '3 huruf' },
+                            { type: 'quiz', question: 'Apakah huruf-huruf Mad Asli?', options: ['Alif, Waw, Ya', 'Ba, Ta, Sa', 'Mim, Nun, Wau'], answer: 'Alif, Waw, Ya' },
+                            { type: 'match', question: 'Padankan huruf Mad Asli dengan contohnya.', pairs: [{a: 'Alif (ا)', b: 'قَالُوا'}, {a: 'Waw (و)', b: 'تُطِيعُوا'}, {a: 'Ya (ي)', b: 'فِيهَا'}] },
+                            { type: 'quiz', question: 'Pilih kalimah yang mengandungi Mad Asli huruf Alif.', options: ['بَابٌ', 'فِيلٌ', 'نُورٌ'], answer: 'بَابٌ', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Pilih kalimah yang mengandungi Mad Asli huruf Waw.', options: ['رَسُولٌ', 'كِتَابٌ', 'كَبِيرٌ'], answer: 'رَسُولٌ', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Pilih kalimah yang mengandungi Mad Asli huruf Ya.', options: ['قِيلَ', 'صَامَ', 'يَقُولُ'], answer: 'قِيلَ', isJawiAnswer: true },
+                            { type: 'match', question: 'Tentukan jenis huruf Mad.', pairs: [{a: 'قَالُوا', b: 'Mad Alif'}, {a: 'يَقُولُ', b: 'Mad Waw'}] },
+                            { type: 'quiz', question: 'Syarat Mad Asli bagi huruf Alif ialah huruf sebelumnya berbaris...', options: ['Atas (Fathah)', 'Bawah (Kasrah)', 'Depan (Dammah)'], answer: 'Atas (Fathah)' },
+                            { type: 'quiz', question: 'Syarat Mad Asli bagi huruf Ya ialah huruf sebelumnya berbaris...', options: ['Atas', 'Bawah', 'Depan'], answer: 'Bawah' }
+                        ]
+                    },
+                    {
+                        id: 'q_taj2', title: 'Tajwid: Bacaan Nun & Mim Sabdu',
+                        games: [
+                            { type: 'quiz', question: 'Huruf Nun (نّ) dan Mim (مّ) bersabdu wajib dibaca secara...', options: ['Dengung (Ghunnah)', 'Jelas (Izhar)', 'Lantunan (Qalqalah)'], answer: 'Dengung (Ghunnah)' },
+                            { type: 'quiz', question: 'Berapakah kadar panjang dengung bagi wajibul ghunnah?', options: ['1 harakat', '2 harakat', '4 harakat'], answer: '2 harakat' },
+                            { type: 'match', question: 'Padankan hukum dengan hurufnya.', pairs: [{a: 'Mim Bersabdu', b: 'مّ'}, {a: 'Nun Bersabdu', b: 'نّ'}] },
+                            { type: 'quiz', question: 'Pilih kalimah yang mengandungi wajibul ghunnah (Mim).', options: ['ثُمَّ', 'مَنْ', 'أَمْ'], answer: 'ثُمَّ', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Pilih kalimah yang mengandungi wajibul ghunnah (Nun).', options: ['إِنَّ', 'أَنْ', 'عَنْ'], answer: 'إِنَّ', isJawiAnswer: true },
+                            { type: 'match', question: 'Cari contoh hukum Mim/Nun bersabdu.', pairs: [{a: 'عَمَّ', b: 'Mim Sabdu'}, {a: 'النَّاسِ', b: 'Nun Sabdu'}] },
+                            { type: 'quiz', question: 'Adakah perkataan "مِنَ الْجِنَّةِ" mengandungi dengung (Ghunnah)?', options: ['Ya', 'Tidak'], answer: 'Ya' },
+                            { type: 'quiz', question: 'Tanda sabdu (tasydid) berbentuk seperti gigi huruf...', options: ['Sin (س)', 'Syin (ش)', 'Sad (ص)'], answer: 'Sin (س)' },
+                            { type: 'sequence', question: 'Susun langkah membaca Mim bersabdu.', items: ['Lihat huruf Mim', 'Pastikan ada tanda sabdu', 'Baca dengung 2 harakat'], answer: ['Lihat huruf Mim', 'Pastikan ada tanda sabdu', 'Baca dengung 2 harakat'] },
+                            { type: 'quiz', question: 'Membaca tanpa dengung pada huruf bersabdu ini dianggap...', options: ['Sahaja', 'Kesalahan tajwid', 'Sunat'], answer: 'Kesalahan tajwid' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'jawi', title: 'Jawi', icon: '✍️', color: 'bg-green-500',
+                units: [
+                    {
+                        id: 'j_u1', title: 'Unit 1: 3 & 4 Suku Kata',
+                        games: [
+                            { type: 'quiz', question: 'Pilih ejaan Jawi yang betul bagi "Matahari".', options: ['ماتاهاري', 'متهاري', 'ماتہاري'], answer: 'ماتاهاري', isJawiAnswer: true },
+                            { type: 'match', question: 'Padankan Rumi dan Jawi (3 suku kata).', pairs: [{a: 'Kerusi', b: 'کروسي'}, {a: 'Kamera', b: 'کاميرا'}, {a: 'Kereta', b: 'کريتا'}] },
+                            { type: 'quiz', question: 'Pilih ejaan Rumi bagi "چغکريک".', options: ['Cengkerik', 'Cengkeram', 'Cengkerang'], answer: 'Cengkerik' },
+                            { type: 'quiz', question: 'Berapakah suku kata bagi perkataan "Jururawat"?', options: ['2', '3', '4'], answer: '4' },
+                            { type: 'match', question: 'Padankan perkataan Rumi dan Jawi (4 suku kata).', pairs: [{a: 'Matahari', b: 'ماتاهاري'}, {a: 'Jururawat', b: 'جوروراوت'}] },
+                            { type: 'sequence', question: 'Cantumkan suku kata menjadi "Cakerawala".', items: ['چا', 'ک', 'را', 'وا', 'لا'], answer: ['چا', 'ک', 'را', 'وا', 'لا'] },
+                            { type: 'quiz', question: 'Pilih ejaan Jawi yang betul bagi "Pramugara".', options: ['فراموݢارا', 'فراموݢرا', 'فراموݢر'], answer: 'فراموݢارا', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Pilih ejaan Rumi bagi "فوليس".', options: ['Polis', 'Pulau', 'Pulas'], answer: 'Polis' },
+                            { type: 'match', question: 'Padankan perkataan dengan bilangan suku kata.', pairs: [{a: 'Kamera (کاميرا)', b: '3 Suku Kata'}, {a: 'Matahari (ماتاهاري)', b: '4 Suku Kata'}] },
+                            { type: 'quiz', question: 'Ejaan Jawi "تليۏيشين" ialah untuk perkataan...', options: ['Televisyen', 'Telefon', 'Teleks'], answer: 'Televisyen' }
+                        ]
+                    },
+                    {
+                        id: 'j_u2', title: 'Unit 2: Rangkai Kata',
+                        games: [
+                            { type: 'match', question: 'Bina Rangkai Kata yang betul.', pairs: [{a: 'Cermin', b: 'مات (Mata)'}, {a: 'Kasut', b: 'بولا (Bola)'}, {a: 'Pasu', b: 'بوغا (Bunga)'}] },
+                            { type: 'quiz', question: 'Pilih rangkai kata bagi "Kaca".', options: ['مات (Mata)', 'کايو (Kayu)', 'اير (Air)'], answer: 'مات (Mata)' },
+                            { type: 'quiz', question: 'Apakah maksud "کايو افي"?', options: ['Kayu Api', 'Kayu Ara', 'Kaya Raya'], answer: 'Kayu Api' },
+                            { type: 'sequence', question: 'Susun menjadi rangkai kata "Papan Hitam".', items: ['ڤاڤن', 'هيتم'], answer: ['ڤاڤن', 'هيتم'] },
+                            { type: 'match', question: 'Padankan Rangkai Kata.', pairs: [{a: 'بيلق', b: 'اير'}, {a: 'ڤاڤن', b: 'توليس'}] },
+                            { type: 'quiz', question: 'Pilih perkataan yang sesuai: "Tali ____" (Leher).', options: ['ليهير', 'ڤيڠݢڠ', 'کاسوت'], answer: 'ليهير', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Ejaan Jawi untuk "Buku Tulis" ialah...', options: ['بوکو توليس', 'بوکو باچ', 'بوکو چريتا'], answer: 'بوکو توليس', isJawiAnswer: true },
+                            { type: 'match', question: 'Padankan rangkai kata pakaian.', pairs: [{a: 'باجو', b: 'کوروڠ'}, {a: 'تودوڠ', b: 'ساجي'}] },
+                            { type: 'quiz', question: 'Pilih rangkai kata yang betul: "Beg ____" (Sekolah).', options: ['سکوله', 'تيدور', 'تاڠن'], answer: 'سکوله', isJawiAnswer: true },
+                            { type: 'sequence', question: 'Susun menjadi "Cermin Mata Gelap".', items: ['چرمين', 'مات', 'ݢلڤ'], answer: ['چرمين', 'مات', 'ݢلڤ'] }
+                        ]
+                    },
+                    {
+                        id: 'j_u3', title: 'Unit 3: Ayat Pendek & Ejaan',
+                        games: [
+                            { type: 'quiz', question: 'Pilih ejaan Jawi yang betul bagi "Durian".', options: ['دورين', 'دوري', 'دوريان'], answer: 'دوريان', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Pilih ejaan Jawi yang betul bagi "Rambutan".', options: ['رمبوتن', 'رمبوتان', 'رامبوتن'], answer: 'رمبوتن', isJawiAnswer: true },
+                            { type: 'sequence', question: 'Susun ayat: "Saya suka makan durian".', items: ['ساي', 'سوک', 'ماکن', 'دوريان'], answer: ['ساي', 'سوک', 'ماکن', 'دوريان'] },
+                            { type: 'match', question: 'Padankan perkataan buah-buahan.', pairs: [{a: 'Betik', b: 'بتيق'}, {a: 'Pisang', b: 'ڤيسڠ'}] },
+                            { type: 'quiz', question: 'Ayat "ايبو بلي ايکن" bermaksud...', options: ['Ibu beli ikan', 'Ibu basuh ikan', 'Ibu bela ikan'], answer: 'Ibu beli ikan' },
+                            { type: 'match', question: 'Padankan perkataan sayuran.', pairs: [{a: 'Kobis', b: 'کوبيس'}, {a: 'Sawi', b: 'ساوي'}] },
+                            { type: 'quiz', question: 'Pilih ejaan Jawi bagi "Bapa".', options: ['باڤ', 'باڤا', 'باف'], answer: 'باڤ', isJawiAnswer: true },
+                            { type: 'sequence', question: 'Susun ayat: "Bapa cuci kereta".', items: ['باڤ', 'چوچي', 'کريتا'], answer: ['باڤ', 'چوچي', 'کريتا'] },
+                            { type: 'quiz', question: 'Pilih ejaan Jawi bagi "Masjid".', options: ['مسجد', 'ماسجيد', 'مسجيد'], answer: 'مسجد', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Ayat "ساي ڤرݢي سکوله" bermaksud...', options: ['Saya pergi sekolah', 'Saya pergi kedai', 'Saya pergi surau'], answer: 'Saya pergi sekolah' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'akidah', title: 'Akidah', icon: '🤲', color: 'bg-purple-500',
+                units: [
+                    {
+                        id: 'a_u1', title: 'Unit 1: Sifat Allah Wujud - Hayat',
+                        games: [
+                            { type: 'match', question: 'Padankan Sifat Allah dengan maksudnya.', pairs: [{a: 'Wujud (وُجُودٌ)', b: 'Ada'}, {a: 'Qidam (قِدَمٌ)', b: 'Sedia ada'}] },
+                            { type: 'match', question: 'Padankan Sifat Allah dengan maksudnya.', pairs: [{a: 'Baqa\' (بَقَاءٌ)', b: 'Kekal'}, {a: 'Qudrat (قُدْرَةٌ)', b: 'Berkuasa'}] },
+                            { type: 'quiz', question: 'Apakah maksud sifat "Ilmu" (عِلْمٌ) bagi Allah?', options: ['Mengetahui', 'Melihat', 'Mendengar'], answer: 'Mengetahui' },
+                            { type: 'quiz', question: 'Apakah maksud sifat "Hayat" (حَيَاةٌ) bagi Allah?', options: ['Hidup', 'Kekal', 'Berkehendak'], answer: 'Hidup' },
+                            { type: 'quiz', question: 'Lawan bagi sifat Wujud (Ada) ialah...', options: ['Tiada (Adam)', 'Mati (Maut)', 'Lemah (Ajzun)'], answer: 'Tiada (Adam)' },
+                            { type: 'quiz', question: 'Lawan bagi sifat Qudrat (Berkuasa) ialah...', options: ['Lemah (Ajzun)', 'Jahil (Jahlun)', 'Pekak (Summun)'], answer: 'Lemah (Ajzun)' },
+                            { type: 'match', question: 'Padankan sifat Allah dengan lawan sifatnya.', pairs: [{a: 'Hayat (Hidup)', b: 'Maut (Mati)'}, {a: 'Ilmu (Mengetahui)', b: 'Jahlun (Jahil)'}] },
+                            { type: 'quiz', question: 'Hukum mempercayai sifat-sifat Allah adalah...', options: ['Wajib', 'Sunat', 'Harus'], answer: 'Wajib' },
+                            { type: 'sequence', question: 'Susun sifat 20 bermula dari pertama.', items: ['Wujud', 'Qidam', 'Baqa\''], answer: ['Wujud', 'Qidam', 'Baqa\''] },
+                            { type: 'quiz', question: 'Bolehkah Allah mati?', options: ['Tidak sama sekali, Allah bersifat Hayat', 'Boleh', 'Mungkin'], answer: 'Tidak sama sekali, Allah bersifat Hayat' }
+                        ]
+                    },
+                    {
+                        id: 'a_u2', title: 'Unit 2: Al-Ahad & As-Samad',
+                        games: [
+                            { type: 'quiz', question: 'Apakah maksud nama Allah Al-Ahad (الأَحَدُ)?', options: ['Maha Esa (Tunggal)', 'Maha Berkuasa', 'Maha Mengetahui'], answer: 'Maha Esa (Tunggal)' },
+                            { type: 'quiz', question: 'Apakah maksud nama Allah As-Samad (الصَّمَدُ)?', options: ['Tempat tumpuan hajat', 'Maha Mendengar', 'Maha Melihat'], answer: 'Tempat tumpuan hajat' },
+                            { type: 'match', question: 'Padankan Nama Allah dan maksudnya.', pairs: [{a: 'Al-Ahad', b: 'Maha Esa'}, {a: 'As-Samad', b: 'Tempat Bergantung'}] },
+                            { type: 'quiz', question: 'Surah apakah yang menerangkan tentang Al-Ahad dan As-Samad?', options: ['Surah Al-Ikhlas', 'Surah Al-Fatihah', 'Surah An-Nas'], answer: 'Surah Al-Ikhlas' },
+                            { type: 'sequence', question: 'Susun ayat Surah Al-Ikhlas.', items: ['قُلْ هُوَ اللَّهُ أَحَدٌ', 'اللَّهُ الصَّمَدُ'], answer: ['قُلْ هُوَ اللَّهُ أَحَدٌ', 'اللَّهُ الصَّمَدُ'] },
+                            { type: 'quiz', question: 'Lengkapkan: Allah itu Esa, Dia tidak beranak dan tidak pula...', options: ['Diperanakkan', 'Tidur', 'Makan'], answer: 'Diperanakkan' },
+                            { type: 'quiz', question: 'Orang yang menyekutukan Allah dengan benda lain dipanggil...', options: ['Syirik', 'Iman', 'Taqwa'], answer: 'Syirik' },
+                            { type: 'quiz', question: 'Apabila kita susah, kita mestilah berdoa dan meminta tolong hanya kepada...', options: ['Allah (As-Samad)', 'Pokok', 'Batu'], answer: 'Allah (As-Samad)' },
+                            { type: 'match', question: 'Kesan beriman dengan nama Allah.', pairs: [{a: 'Al-Ahad', b: 'Tidak mensyirikkan Allah'}, {a: 'As-Samad', b: 'Sentiasa berdoa kepada-Nya'}] },
+                            { type: 'quiz', question: 'Hukum mempercayai Asmaul Husna (Nama-nama Allah) ialah...', options: ['Wajib', 'Sunat', 'Makruh'], answer: 'Wajib' }
+                        ]
+                    },
+                    {
+                        id: 'a_u3', title: 'Unit 3: Beriman Kepada Malaikat',
+                        games: [
+                            { type: 'quiz', question: 'Malaikat diciptakan oleh Allah daripada...', options: ['Cahaya (Nur)', 'Api', 'Tanah'], answer: 'Cahaya (Nur)' },
+                            { type: 'quiz', question: 'Berapakah bilangan Malaikat yang wajib kita ketahui?', options: ['10 Malaikat', '20 Malaikat', '25 Malaikat'], answer: '10 Malaikat' },
+                            { type: 'match', question: 'Padankan nama Malaikat dan tugasnya.', pairs: [{a: 'Jibrail', b: 'Menyampaikan wahyu'}, {a: 'Mikail', b: 'Menurunkan rezeki'}] },
+                            { type: 'match', question: 'Padankan nama Malaikat dan tugasnya.', pairs: [{a: 'Raqib', b: 'Mencatat amalan baik'}, {a: 'Atid', b: 'Mencatat amalan buruk'}] },
+                            { type: 'quiz', question: 'Siapakah Malaikat yang bertugas meniup Sangkakala pada hari kiamat?', options: ['Israfil', 'Izrail', 'Malik'], answer: 'Israfil' },
+                            { type: 'quiz', question: 'Siapakah Malaikat yang bertugas mencabut nyawa?', options: ['Izrail', 'Jibrail', 'Ridhwan'], answer: 'Izrail' },
+                            { type: 'match', question: 'Padankan Malaikat dan alam kubur.', pairs: [{a: 'Munkar', b: 'Menyoal dalam kubur'}, {a: 'Nakir', b: 'Menyoal dalam kubur'}] },
+                            { type: 'quiz', question: 'Malaikat penjaga pintu Syurga bernama...', options: ['Ridhwan', 'Malik', 'Atid'], answer: 'Ridhwan' },
+                            { type: 'quiz', question: 'Malaikat penjaga pintu Neraka bernama...', options: ['Malik', 'Ridhwan', 'Israfil'], answer: 'Malik' },
+                            { type: 'sequence', question: 'Susun nama malaikat (1-4).', items: ['Jibrail', 'Mikail', 'Israfil', 'Izrail'], answer: ['Jibrail', 'Mikail', 'Israfil', 'Izrail'] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'ibadah', title: 'Ibadah', icon: '🕌', color: 'bg-teal-500',
+                units: [
+                    {
+                        id: 'i_u1', title: 'Unit 1: Diriku Bersih (Istinja\')',
+                        games: [
+                            { type: 'quiz', question: 'Apakah erti istinja\'?', options: ['Membersihkan kubul & dubur selepas membuang air', 'Mandi', 'Mengambil wuduk'], answer: 'Membersihkan kubul & dubur selepas membuang air' },
+                            { type: 'quiz', question: 'Alat paling utama untuk beristinja\' ialah...', options: ['Air Mutlak', 'Tisu', 'Batu'], answer: 'Air Mutlak' },
+                            { type: 'match', question: 'Pilih alat-alat istinja\' selain air.', pairs: [{a: 'Batu', b: 'Benda kesat'}, {a: 'Kertas Tisu', b: 'Benda kesat'}] },
+                            { type: 'quiz', question: 'Berikut adalah alat yang HARAM digunakan untuk beristinja\', KECUALI...', options: ['Daun kering', 'Kertas bertulisan Al-Quran', 'Roti / Makanan'], answer: 'Daun kering' },
+                            { type: 'quiz', question: 'Bolehkah beristinja\' menggunakan kaca yang licin?', options: ['Tidak Boleh', 'Boleh', 'Sunat'], answer: 'Tidak Boleh' },
+                            { type: 'quiz', question: 'Berapakah bilangan batu atau bucu batu yang disunatkan jika beristinja\' guna batu?', options: ['3', '2', '1'], answer: '3' },
+                            { type: 'sequence', question: 'Susun adab masuk tandas.', items: ['Masuk kaki kiri', 'Baca doa masuk tandas', 'Pakai selipar'], answer: ['Pakai selipar', 'Baca doa masuk tandas', 'Masuk kaki kiri'] },
+                            { type: 'match', question: 'Padankan syarat istinja\' tanpa air.', pairs: [{a: 'Najis', b: 'Belum kering'}, {a: 'Alat', b: 'Kering dan kesat'}] },
+                            { type: 'quiz', question: 'Masuk tandas disunatkan langkah kaki...', options: ['Kiri', 'Kanan', 'Kedua-duanya'], answer: 'Kiri' },
+                            { type: 'quiz', question: 'Keluar tandas disunatkan langkah kaki...', options: ['Kanan', 'Kiri', 'Terus lari'], answer: 'Kanan' }
+                        ]
+                    },
+                    {
+                        id: 'i_u2', title: 'Unit 2: Syarat Solat',
+                        games: [
+                            { type: 'quiz', question: 'Apakah hukum menunaikan solat fardu 5 waktu bagi Muslim?', options: ['Wajib', 'Sunat', 'Harus'], answer: 'Wajib' },
+                            { type: 'match', question: 'Kelaskan Syarat Wajib Solat.', pairs: [{a: 'Islam', b: 'Bukan Kafir'}, {a: 'Baligh', b: 'Cukup Umur'}, {a: 'Berakal', b: 'Siuman/Tidak Gila'}] },
+                            { type: 'match', question: 'Kelaskan Syarat Sah Solat.', pairs: [{a: 'Yakin masuk waktu', b: 'Syarat Sah'}, {a: 'Menutup aurat', b: 'Syarat Sah'}] },
+                            { type: 'quiz', question: 'Kiblat umat Islam untuk menunaikan solat menghala ke arah...', options: ['Kaabah di Makkah', 'Masjidil Aqsa', 'Masjid Nabawi'], answer: 'Kaabah di Makkah' },
+                            { type: 'quiz', question: 'Aurat lelaki semasa solat ialah dari pusat hingga ke...', options: ['Lutut', 'Buku lali', 'Dada'], answer: 'Lutut' },
+                            { type: 'quiz', question: 'Aurat perempuan semasa solat meliputi seluruh anggota tubuh KECUALI...', options: ['Muka dan tapak tangan', 'Kepala', 'Kaki'], answer: 'Muka dan tapak tangan' },
+                            { type: 'quiz', question: 'Jika pakaian solat terkena najis, solatnya...', options: ['Tidak Sah', 'Sah', 'Makruh'], answer: 'Tidak Sah' },
+                            { type: 'sequence', question: 'Susun waktu solat mengikut urutan.', items: ['Subuh', 'Zohor', 'Asar'], answer: ['Subuh', 'Zohor', 'Asar'] },
+                            { type: 'quiz', question: 'Syarat suci dari hadas kecil bermaksud wajib mengambil...', options: ['Wuduk', 'Mandi Wajib', 'Tayammum'], answer: 'Wuduk' },
+                            { type: 'match', question: 'Padankan sebab batal solat.', pairs: [{a: 'Makan/Minum', b: 'Batal'}, {a: 'Bercakap sengaja', b: 'Batal'}] }
+                        ]
+                    },
+                    {
+                        id: 'i_u3', title: 'Unit 3: Rukun Qauli (Bacaan Wajib)',
+                        games: [
+                            { type: 'quiz', question: 'Rukun solat terbahagi kepada tiga: Qauli (Bacaan), Fi\'li (Perbuatan) dan...', options: ['Qalbi (Hati)', 'Sunat', 'Makruh'], answer: 'Qalbi (Hati)' },
+                            { type: 'sequence', question: 'Susun rukun qauli (bacaan wajib) mengikut urutan.', items: ['Takbiratul Ihram', 'Surah Al-Fatihah', 'Tahiyat Akhir', 'Salam'], answer: ['Takbiratul Ihram', 'Surah Al-Fatihah', 'Tahiyat Akhir', 'Salam'] },
+                            { type: 'quiz', question: 'Membaca Surah Al-Fatihah dalam solat hukumnya...', options: ['Rukun (Wajib)', 'Sunat', 'Batal'], answer: 'Rukun (Wajib)' },
+                            { type: 'quiz', question: 'Ucapan Takbiratul Ihram ialah...', options: ['Allahu Akbar', 'Alhamdulillah', 'Subhanallah'], answer: 'Allahu Akbar' },
+                            { type: 'match', question: 'Padankan potongan bacaan Tahiyat Akhir.', pairs: [{a: 'التَّحِيَّاتُ الْمُبَارَكَاتُ', b: 'الصَّلَوَاتُ الطَّيِّبَاتُ لِلَّهِ'}, {a: 'السَّلَامُ عَلَيْكَ', b: 'أَيُّهَا النَّبِيُّ'}] },
+                            { type: 'quiz', question: 'Selawat ke atas Nabi dalam Tahiyat Akhir hukumnya...', options: ['Rukun (Wajib)', 'Sunat Ab\'ad', 'Sunat Hai\'ah'], answer: 'Rukun (Wajib)' },
+                            { type: 'quiz', question: 'Bolehkah kita membaca Al-Fatihah dalam hati (tanpa bunyi) semasa solat fardu?', options: ['Tidak Boleh', 'Boleh', 'Sunat'], answer: 'Tidak Boleh' },
+                            { type: 'match', question: 'Padankan Rukun Solat.', pairs: [{a: 'Niat', b: 'Rukun Qalbi'}, {a: 'Al-Fatihah', b: 'Rukun Qauli'}] },
+                            { type: 'quiz', question: 'Lafaz salam yang PERTAMA wajib diucapkan ialah...', options: ['Assalamualaikum warahmatullah', 'Selamat Sejahtera', 'Aamiin'], answer: 'Assalamualaikum warahmatullah' },
+                            { type: 'quiz', question: 'Jika tertinggal rukun qauli, solat kita akan...', options: ['Terbatal / Tidak Sah', 'Sah', 'Dapat pahala lebih'], answer: 'Terbatal / Tidak Sah' }
+                        ]
+                    },
+                    {
+                        id: 'i_u4', title: 'Unit 4: Bacaan Sunat Solat',
+                        games: [
+                            { type: 'quiz', question: 'Bacaan "Doa Iftitah" dibaca selepas...', options: ['Takbiratul Ihram', 'Al-Fatihah', 'Rukuk'], answer: 'Takbiratul Ihram' },
+                            { type: 'match', question: 'Padankan pergerakan dengan bacaan sunatnya.', pairs: [{a: 'Rukuk', b: 'سُبْحَانَ رَبِّيَ الْعَظِيمِ وَبِحَمْدِهِ'}, {a: 'Sujud', b: 'سُبْحَانَ رَبِّيَ الْأَعْلَى وَبِحَمْدِهِ'}] },
+                            { type: 'quiz', question: 'Bacaan sunat dibaca dengan niat untuk...', options: ['Menambah pahala kesempurnaan solat', 'Membatalkan solat', 'Bermain-main'], answer: 'Menambah pahala kesempurnaan solat' },
+                            { type: 'quiz', question: 'Ketika bangun dari rukuk (Iktidal), kita membaca...', options: ['سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ', 'اللَّهُ أَكْبَرُ', 'آمِين'], answer: 'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ', isJawiAnswer: true },
+                            { type: 'sequence', question: 'Susun lafaz tasbih sujud.', items: ['سُبْحَانَ', 'رَبِّيَ', 'الْأَعْلَى', 'وَبِحَمْدِهِ'], answer: ['سُبْحَانَ', 'رَبِّيَ', 'الْأَعْلَى', 'وَبِحَمْدِهِ'] },
+                            { type: 'quiz', question: 'Doa duduk antara dua sujud bermula dengan lafaz...', options: ['رَبِّ اغْفِرْ لِي', 'سُبْحَانَكَ', 'أَعُوذُ بِاللَّهِ'], answer: 'رَبِّ اغْفِرْ لِي', isJawiAnswer: true },
+                            { type: 'match', question: 'Padankan erti bacaan sunat.', pairs: [{a: 'Subhana Rabbiyal Azim', b: 'Maha Suci Tuhanku Yang Maha Agung'}, {a: 'Subhana Rabbiyal A\'la', b: 'Maha Suci Tuhanku Yang Maha Tinggi'}] },
+                            { type: 'quiz', question: 'Membaca Amin selepas surah Al-Fatihah hukumnya...', options: ['Sunat', 'Wajib', 'Haram'], answer: 'Sunat' },
+                            { type: 'quiz', question: 'Jika tertinggal bacaan sunat hai\'ah (seperti tasbih rukuk), perlukah sujud sahwi?', options: ['Tidak Perlu', 'Perlu', 'Wajib'], answer: 'Tidak Perlu' },
+                            { type: 'quiz', question: 'Berapa kalikah disunatkan membaca tasbih ketika rukuk dan sujud?', options: ['3 kali', '1 kali', '10 kali'], answer: '3 kali' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'sirah', title: 'Sirah', icon: '🐪', color: 'bg-yellow-500',
+                units: [
+                    {
+                        id: 's_u1', title: 'Unit 1: Peristiwa Belah Dada',
+                        games: [
+                            { type: 'quiz', question: 'Siapakah wanita yang menyusukan Nabi Muhammad SAW di perkampungan Bani Saad?', options: ['Halimah As-Sa\'diah', 'Aminah', 'Khadijah'], answer: 'Halimah As-Sa\'diah' },
+                            { type: 'quiz', question: 'Semasa kecil, dada Nabi Muhammad SAW telah dibelah oleh malaikat untuk disucikan. Malaikat apakah itu?', options: ['Malaikat Jibrail', 'Malaikat Mikail', 'Malaikat Izrail'], answer: 'Malaikat Jibrail' },
+                            { type: 'match', question: 'Padankan peristiwa dengan objek berkaitan.', pairs: [{a: 'Air pencuci hati Nabi', b: 'Air Zamzam'}, {a: 'Bekas pembasuh', b: 'Baskom Emas'}] },
+                            { type: 'quiz', question: 'Berapakah umur Nabi Muhammad SAW ketika peristiwa dada baginda dibelah?', options: ['4 tahun', '10 tahun', '40 tahun'], answer: '4 tahun' },
+                            { type: 'quiz', question: 'Malaikat mengeluarkan segumpal ___ dari dada Nabi Muhammad SAW.', options: ['Darah beku (bahagian syaitan)', 'Batu', 'Besi'], answer: 'Darah beku (bahagian syaitan)' },
+                            { type: 'quiz', question: 'Selepas disucikan, dada Nabi Muhammad dipenuhi dengan...', options: ['Iman dan Hikmah', 'Wang dan Emas', 'Dendam'], answer: 'Iman dan Hikmah' },
+                            { type: 'sequence', question: 'Susun urutan peristiwa belah dada.', items: ['Malaikat Jibrail datang', 'Dada Nabi dibelah', 'Hati disuci dengan air zamzam', 'Dada ditutup semula'], answer: ['Malaikat Jibrail datang', 'Dada Nabi dibelah', 'Hati disuci dengan air zamzam', 'Dada ditutup semula'] },
+                            { type: 'quiz', question: 'Di manakah Nabi Muhammad bermain semasa malaikat datang kepada baginda?', options: ['Belakang khemah', 'Dalam gua', 'Tepi laut'], answer: 'Belakang khemah' },
+                            { type: 'quiz', question: 'Apakah reaksi saudara susuan Nabi apabila melihat kejadian itu?', options: ['Berlari lapor pada ibunya', 'Turut bermain', 'Marah malaikat'], answer: 'Berlari lapor pada ibunya' },
+                            { type: 'quiz', question: 'Pengajaran peristiwa belah dada ialah Allah mahu memelihara Nabi daripada...', options: ['Sifat keji (buruk)', 'Menjadi kaya', 'Menjadi gembala kambing'], answer: 'Sifat keji (buruk)' }
+                        ]
+                    },
+                    {
+                        id: 's_u2', title: 'Unit 2: Nabi Muhammad Al-Amin',
+                        games: [
+                            { type: 'quiz', question: 'Apakah maksud gelaran "Al-Amin"?', options: ['Sangat Dipercayai / Amanah', 'Sangat Kuat', 'Sangat Kaya'], answer: 'Sangat Dipercayai / Amanah' },
+                            { type: 'quiz', question: 'Siapakah yang memberi gelaran Al-Amin kepada Nabi Muhammad SAW?', options: ['Penduduk Makkah', 'Penduduk Madinah', 'Penduduk Mesir'], answer: 'Penduduk Makkah' },
+                            { type: 'match', question: 'Padankan ciri sifat amanah Nabi.', pairs: [{a: 'Berniaga', b: 'Jujur dan tidak menipu'}, {a: 'Bercakap', b: 'Sentiasa benar'}] },
+                            { type: 'quiz', question: 'Nabi Muhammad SAW terkenal dengan sifat amanah sejak...', options: ['Kecil / Muda', 'Selepas jadi Rasul', 'Umur 50 tahun'], answer: 'Kecil / Muda' },
+                            { type: 'quiz', question: 'Siti Khadijah telah mengupah Nabi untuk membawa barang _____ ke Syam kerana kejujurannya.', options: ['Dagangan (Perniagaan)', 'Rompakan', 'Pemberian cukai'], answer: 'Dagangan (Perniagaan)' },
+                            { type: 'sequence', question: 'Susun sifat mulia Nabi Muhammad.', items: ['Siddiq (Benar)', 'Amanah (Dipercayai)', 'Tabligh (Menyampaikan)', 'Fatanah (Bijaksana)'], answer: ['Siddiq (Benar)', 'Amanah (Dipercayai)', 'Tabligh (Menyampaikan)', 'Fatanah (Bijaksana)'] },
+                            { type: 'quiz', question: 'Apabila berlaku perselisihan meletakkan Hajarul Aswad, baginda menjadi...', options: ['Hakim yang adil', 'Pencuri batu', 'Penonton'], answer: 'Hakim yang adil' },
+                            { type: 'quiz', question: 'Adakah Nabi pernah menipu dalam timbangan berniaga?', options: ['Tidak pernah', 'Pernah', 'Kadang-kadang'], answer: 'Tidak pernah' },
+                            { type: 'match', question: 'Sebab baginda digelar Al-Amin.', pairs: [{a: 'Amanah', b: 'Jaga barang orang dengan baik'}, {a: 'Siddiq', b: 'Tidak pernah berdusta'}] },
+                            { type: 'quiz', question: 'Sebagai umat Nabi Muhammad, kita mestilah mencontohi sifat...', options: ['Amanah', 'Khianat', 'Malas'], answer: 'Amanah' }
+                        ]
+                    },
+                    {
+                        id: 's_u3', title: 'Unit 3: Kenali Sahabat Nabi',
+                        games: [
+                            { type: 'quiz', question: 'Apakah maksud Sahabat Nabi?', options: ['Orang yang berjumpa Nabi, beriman dan mati dalam Islam', 'Keluarga Nabi', 'Musuh Nabi'], answer: 'Orang yang berjumpa Nabi, beriman dan mati dalam Islam' },
+                            { type: 'match', question: 'Kenali Sahabat Khulafa Ar-Rasyidin.', pairs: [{a: 'Abu Bakar', b: 'As-Siddiq'}, {a: 'Umar', b: 'Al-Khattab'}, {a: 'Uthman', b: 'Bin Affan'}] },
+                            { type: 'match', question: 'Kenali gelaran Sahabat Nabi.', pairs: [{a: 'Hamzah bin Abdul Muttalib', b: 'Singa Allah'}, {a: 'Bilal bin Rabah', b: 'Muazin (Tukang azan)'}] },
+                            { type: 'quiz', question: 'Sahabat yang paling rapat dan menemani Nabi berhijrah ke Madinah ialah...', options: ['Abu Bakar As-Siddiq', 'Abu Jahal', 'Abu Lahab'], answer: 'Abu Bakar As-Siddiq' },
+                            { type: 'quiz', question: 'Siapakah wanita pertama yang mati syahid di jalan Allah?', options: ['Sumayyah', 'Khadijah', 'Aisyah'], answer: 'Sumayyah' },
+                            { type: 'quiz', question: 'Siapakah kanak-kanak pertama yang memeluk Islam?', options: ['Ali bin Abi Talib', 'Zaid bin Harithah', 'Anas bin Malik'], answer: 'Ali bin Abi Talib' },
+                            { type: 'sequence', question: 'Susun nama 4 Khulafa Ar-Rasyidin mengikut turutan.', items: ['Abu Bakar', 'Umar', 'Uthman', 'Ali'], answer: ['Abu Bakar', 'Umar', 'Uthman', 'Ali'] },
+                            { type: 'quiz', question: 'Sahabat yang kaya dan banyak menderma harta untuk Islam ialah...', options: ['Abdul Rahman bin Auf', 'Bilal bin Rabah', 'Abu Hurairah'], answer: 'Abdul Rahman bin Auf' },
+                            { type: 'quiz', question: 'Kita mestilah memuliakan sahabat Nabi dengan mengucapkan...', options: ['Radhiyallahu Anhu', 'Alhamdulillah', 'Nauzubillah'], answer: 'Radhiyallahu Anhu' },
+                            { type: 'quiz', question: 'Hukum menghina sahabat Nabi Muhammad SAW adalah...', options: ['Berdosa besar / Haram', 'Makruh', 'Harus'], answer: 'Berdosa besar / Haram' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'adab', title: 'Adab', icon: '🤝', color: 'bg-pink-500',
+                units: [
+                    {
+                        id: 'ad_u1', title: 'Unit 1: Adab Makan & Minum',
+                        games: [
+                            { type: 'match', question: 'Padankan adab makan pada waktu yang sesuai.', pairs: [{a: 'Membasuh Tangan', b: 'Sebelum Makan'}, {a: 'Guna Tangan Kanan', b: 'Semasa Makan'}] },
+                            { type: 'sequence', question: 'Susun adab sebelum makan.', items: ['Basuh tangan', 'Duduk dengan sopan', 'Baca doa makan'], answer: ['Basuh tangan', 'Duduk dengan sopan', 'Baca doa makan'] },
+                            { type: 'quiz', question: 'Doa sebelum makan bermula dengan lafaz...', options: ['اللَّهُمَّ بَارِكْ لَنَا', 'الْحَمْدُ لِلَّهِ', 'سُبْحَانَكَ'], answer: 'اللَّهُمَّ بَارِكْ لَنَا', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Rasulullah SAW menggalakkan kita makan menggunakan tangan...', options: ['Kanan', 'Kiri', 'Kedua-duanya'], answer: 'Kanan' },
+                            { type: 'quiz', question: 'Adakah sopan bercakap ketika mulut penuh dengan makanan?', options: ['Tidak Sopan', 'Sopan', 'Sangat Baik'], answer: 'Tidak Sopan' },
+                            { type: 'match', question: 'Padankan larangan ketika makan.', pairs: [{a: 'Meniup makanan panas', b: 'Makruh / Dilarang'}, {a: 'Membazir makanan', b: 'Haram / Dilarang'}] },
+                            { type: 'quiz', question: 'Selepas makan, kita disunatkan membaca...', options: ['Doa selepas makan (Alhamdulillah...)', 'Surah Yasin', 'Niat puasa'], answer: 'Doa selepas makan (Alhamdulillah...)' },
+                            { type: 'quiz', question: 'Jika terlupa baca doa sebelum makan, kita patut membaca...', options: ['Bismillahi awwalahu wa akhirahu', 'Allahu Akbar', 'Astaghfirullah'], answer: 'Bismillahi awwalahu wa akhirahu' },
+                            { type: 'sequence', question: 'Susun adab selepas makan.', items: ['Kemas pinggan', 'Basuh tangan', 'Baca doa'], answer: ['Kemas pinggan', 'Basuh tangan', 'Baca doa'] },
+                            { type: 'quiz', question: 'Kita digalakkan mengambil makanan yang ___ terlebih dahulu.', options: ['Paling hampir dengan kita', 'Paling jauh', 'Paling mahal'], answer: 'Paling hampir dengan kita' }
+                        ]
+                    },
+                    {
+                        id: 'ad_u2', title: 'Unit 2: Adab Bersahabat',
+                        games: [
+                            { type: 'quiz', question: 'Apakah ciri sahabat yang baik?', options: ['Membantu masa susah', 'Suka mengejek', 'Bermusuhan'], answer: 'Membantu masa susah' },
+                            { type: 'match', question: 'Padankan adab terhadap rakan.', pairs: [{a: 'Sakit', b: 'Ziarah dan doakan'}, {a: 'Berjumpa', b: 'Beri salam senyum'}] },
+                            { type: 'quiz', question: 'Apabila kawan melakukan kesilapan, kita mestilah...', options: ['Menegur secara baik', 'Memukulnya', 'Memalukan dia depan orang'], answer: 'Menegur secara baik' },
+                            { type: 'quiz', question: 'Rasulullah bersabda: Tidak sempurna iman seseorang sehingga dia ___ saudaranya seperti dirinya sendiri.', options: ['Mengasihi', 'Membenci', 'Membiarkan'], answer: 'Mengasihi' },
+                            { type: 'sequence', question: 'Susun cara memilih kawan yang baik.', items: ['Berakhlak mulia', 'Rajin solat dan belajar', 'Hormat guru dan ibu bapa'], answer: ['Berakhlak mulia', 'Rajin solat dan belajar', 'Hormat guru dan ibu bapa'] },
+                            { type: 'match', question: 'Kesan beradab dengan kawan.', pairs: [{a: 'Disayangi Allah', b: 'Kesan Baik'}, {a: 'Hubungan erat', b: 'Kesan Baik'}] },
+                            { type: 'quiz', question: 'Hukum bergaduh dan bermasam muka lebih dari 3 hari adalah...', options: ['Haram / Berdosa', 'Sunat', 'Harus'], answer: 'Haram / Berdosa' },
+                            { type: 'quiz', question: 'Jika kita tersalah laku terhadap rakan, kita wajib...', options: ['Meminta maaf segera', 'Menyembunyikan diri', 'Buat tak tahu'], answer: 'Meminta maaf segera' },
+                            { type: 'quiz', question: 'Apabila meminjam barang kawan, kita wajib...', options: ['Pulangkan dan ucap terima kasih', 'Simpan buat harta sendiri', 'Rosakkan'], answer: 'Pulangkan dan ucap terima kasih' },
+                            { type: 'quiz', question: 'Panggilan yang baik untuk kawan ialah memanggilnya dengan...', options: ['Nama asalnya yang elok', 'Gelar buruk', 'Sesiapa sahaja'], answer: 'Nama asalnya yang elok' }
+                        ]
+                    },
+                    {
+                        id: 'ad_u3', title: 'Unit 3: Adab Berdoa',
+                        games: [
+                            { type: 'sequence', question: 'Pilih dan susun adab fizikal ketika berdoa.', items: ['Menghadap Kiblat', 'Menadah Tangan', 'Merendahkan Suara'], answer: ['Menghadap Kiblat', 'Menadah Tangan', 'Merendahkan Suara'] },
+                            { type: 'quiz', question: 'Apakah maksud Doa?', options: ['Memohon sesuatu kepada Allah dengan rendah diri', 'Memaksa orang', 'Bercakap kosong'], answer: 'Memohon sesuatu kepada Allah dengan rendah diri' },
+                            { type: 'match', question: 'Padankan cara menadah tangan berdoa.', pairs: [{a: 'Tangan', b: 'Diangkat separas dada'}, {a: 'Telapak tangan', b: 'Terbuka ke atas'}] },
+                            { type: 'quiz', question: 'Doa sebaiknya dimulakan dengan...', options: ['Memuji Allah & Berselawat atas Nabi', 'Meminta duit terus', 'Bercerita masalah'], answer: 'Memuji Allah & Berselawat atas Nabi' },
+                            { type: 'quiz', question: 'Masa yang paling mustajab berdoa ialah...', options: ['Selepas solat fardu', 'Ketika menonton TV', 'Ketika tidur'], answer: 'Selepas solat fardu' },
+                            { type: 'match', question: 'Padankan adab hati semasa berdoa.', pairs: [{a: 'Yakin', b: 'Doa akan dimakbulkan'}, {a: 'Ikhlas', b: 'Hanya kerana Allah'}] },
+                            { type: 'quiz', question: 'Doa diakhiri dengan lafaz...', options: ['Aamiin (آمِين)', 'Selesai', 'Terima Kasih'], answer: 'Aamiin (آمِين)', isJawiAnswer: true },
+                            { type: 'quiz', question: 'Orang yang malas berdoa disifatkan Allah sebagai orang yang...', options: ['Sombong', 'Bijak', 'Rajin'], answer: 'Sombong' },
+                            { type: 'sequence', question: 'Susun langkah berdoa yang sempurna.', items: ['Niat ikhlas', 'Mula dengan selawat', 'Sebut hajat jelas', 'Tutup dengan Amin'], answer: ['Niat ikhlas', 'Mula dengan selawat', 'Sebut hajat jelas', 'Tutup dengan Amin'] },
+                            { type: 'quiz', question: 'Jika doa lambat makbul, kita perlulah...', options: ['Bersabar dan terus berdoa', 'Berhenti solat', 'Marah'], answer: 'Bersabar dan terus berdoa' }
+                        ]
+                    },
+                    {
+                        id: 'ad_u4', title: 'Unit 4: Mengasihi Rasulullah',
+                        games: [
+                            { type: 'quiz', question: 'Bagaimanakah cara utama kita menunjukkan kasih kepada Rasulullah SAW?', options: ['Sentiasa berselawat ke atas baginda', 'Melupakan sirah baginda', 'Tidak menjaga kebersihan'], answer: 'Sentiasa berselawat ke atas baginda' },
+                            { type: 'quiz', question: 'Lafaz selawat yang paling ringkas ialah...', options: ['Sallallahu ala Muhammad', 'Subhanallah', 'Bismillah'], answer: 'Sallallahu ala Muhammad' },
+                            { type: 'match', question: 'Padankan bukti kita sayang Rasulullah.', pairs: [{a: 'Sunnah', b: 'Diamalkan dalam hidup'}, {a: 'Akhlak Nabi', b: 'Diteladani dan dicontohi'}] },
+                            { type: 'quiz', question: 'Orang yang paling dekat dengan Nabi di syurga kelak ialah orang yang...', options: ['Paling banyak berselawat kepadanya', 'Paling tinggi', 'Paling kaya'], answer: 'Paling banyak berselawat kepadanya' },
+                            { type: 'quiz', question: 'Orang yang bakhil (kedekut) menurut Nabi ialah mereka yang...', options: ['Tidak berselawat bila nama Nabi disebut', 'Tidak beri wang', 'Tidak beri makan'], answer: 'Tidak berselawat bila nama Nabi disebut' },
+                            { type: 'sequence', question: 'Susun lafaz selawat ke atas Nabi & Keluarga.', items: ['اللَّهُمَّ صَلِّ', 'عَلَى مُحَمَّدٍ', 'وَعَلَى آلِ مُحَمَّدٍ'], answer: ['اللَّهُمَّ صَلِّ', 'عَلَى مُحَمَّدٍ', 'وَعَلَى آلِ مُحَمَّدٍ'] },
+                            { type: 'quiz', question: 'Mengasihi Nabi Muhammad SAW merupakan pelengkap kepada...', options: ['Iman', 'Kekayaan', 'Hobi'], answer: 'Iman' },
+                            { type: 'match', question: 'Tanda mengasihi Nabi', pairs: [{a: 'Cinta', b: 'Keluarga dan sahabat Nabi'}, {a: 'Rindu', b: 'Untuk menziarahi makam baginda'}] },
+                            { type: 'quiz', question: 'Salah satu sunnah Nabi yang mudah diamalkan sebelum tidur ialah...', options: ['Membaca doa tidur & ambil wuduk', 'Main telefon pintar', 'Makan berat'], answer: 'Membaca doa tidur & ambil wuduk' },
+                            { type: 'quiz', question: 'Mentaati ajaran Nabi Muhammad SAW bermaksud mentaati perintah...', options: ['Allah SWT', 'Malaikat', 'Ketua kampung'], answer: 'Allah SWT' }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // Data Peperiksaan
+        const examData = [
+            {
+                id: 'set1', 
+                title: 'Set 1: Ujian Pencapaian 1',
+                desc: 'Merangkumi semua bidang: Al-Quran, Jawi, Akidah, Ibadah, Sirah, Adab.',
+                questions: [
+                    { bidang: 'Al-Quran', question: 'Apakah maksud perkataan "An-Nas"?', options: ['Bintang', 'Manusia', 'Masa', 'Siang'], answer: 'Manusia' },
+                    { bidang: 'Al-Quran', question: 'Berapakah kadar bacaan (harakat) bagi Mad Asli?', options: ['2 harakat', '4 harakat', '6 harakat', 'Dengung'], answer: '2 harakat' },
+                    { bidang: 'Al-Quran', question: 'Huruf Nun bersabdu (نّ) wajib dibaca dengan...', options: ['Jelas', 'Lantunan', 'Dengung 2 harakat', 'Senyap'], answer: 'Dengung 2 harakat' },
+                    { bidang: 'Jawi', question: 'Pilih ejaan Jawi yang betul bagi "Kamera".', options: ['کاميرا', 'کوميرا', 'کمارا', 'کميرا'], answer: 'کاميرا', isJawi: true },
+                    { bidang: 'Jawi', question: 'Apakah maksud "کايو افي"?', options: ['Kayu Ara', 'Kayu Api', 'Kayu Balak', 'Kereta Api'], answer: 'Kayu Api' },
+                    { bidang: 'Jawi', question: 'Pilih ejaan yang betul bagi "Durian".', options: ['دورين', 'دوري', 'دوريان', 'ديرين'], answer: 'دوريان', isJawi: true },
+                    { bidang: 'Akidah', question: 'Apakah maksud sifat "Hayat" bagi Allah?', options: ['Kekal', 'Berkuasa', 'Mengetahui', 'Hidup'], answer: 'Hidup' },
+                    { bidang: 'Akidah', question: 'Surah apakah yang menjelaskan tentang sifat Al-Ahad (Esa) dan As-Samad?', options: ['Al-Fatihah', 'Al-Ikhlas', 'An-Nas', 'Al-Falaq'], answer: 'Al-Ikhlas' },
+                    { bidang: 'Akidah', question: 'Siapakah malaikat yang bertugas menyampaikan wahyu?', options: ['Mikail', 'Jibrail', 'Izrail', 'Atid'], answer: 'Jibrail' },
+                    { bidang: 'Ibadah', question: 'Berikut adalah alat untuk beristinja\' KECUALI:', options: ['Air Mutlak', 'Batu', 'Kertas Tisu', 'Plastik Licin'], answer: 'Plastik Licin' },
+                    { bidang: 'Ibadah', question: 'Aurat lelaki ketika solat adalah dari pusat hingga ke...', options: ['Dada', 'Lutut', 'Buku lali', 'Paha'], answer: 'Lutut' },
+                    { bidang: 'Ibadah', question: 'Apakah ucapan (Rukun Qauli) yang dibaca pada permulaan solat?', options: ['Takbiratul Ihram', 'Tahiyat Akhir', 'Salam', 'Tasbih'], answer: 'Takbiratul Ihram' },
+                    { bidang: 'Sirah', question: 'Siapakah yang membelah dada Nabi Muhammad SAW semasa kecil?', options: ['Halimah', 'Abu Talib', 'Malaikat Jibrail', 'Pendeta Buhaira'], answer: 'Malaikat Jibrail' },
+                    { bidang: 'Sirah', question: 'Gelaran "Al-Amin" yang diberikan kepada Nabi Muhammad bermaksud...', options: ['Yang Kuat', 'Sangat Dipercayai', 'Yang Kaya', 'Yang Bijak'], answer: 'Sangat Dipercayai' },
+                    { bidang: 'Sirah', question: 'Siapakah sahabat rapat Nabi yang berhijrah bersama baginda ke Madinah?', options: ['Umar Al-Khattab', 'Abu Jahal', 'Abu Bakar As-Siddiq', 'Bilal bin Rabah'], answer: 'Abu Bakar As-Siddiq' },
+                    { bidang: 'Adab', question: 'Kita disunatkan makan menggunakan tangan...', options: ['Kiri', 'Kanan', 'Dua-dua', 'Sudu sahaja'], answer: 'Kanan' },
+                    { bidang: 'Adab', question: 'Apakah ciri sahabat yang baik?', options: ['Suka bergaduh', 'Membantu masa susah', 'Kuat mengejek', 'Pentingkan diri'], answer: 'Membantu masa susah' },
+                    { bidang: 'Adab', question: 'Ketika berdoa kita hendaklah mengangkat tangan dan menghadap...', options: ['Timur', 'Matahari terbenam', 'Kiblat', 'Bulan'], answer: 'Kiblat' },
+                    { bidang: 'Adab', question: 'Bagaimanakah cara kita membuktikan kasih kepada Rasulullah?', options: ['Melupakan sirah baginda', 'Banyak berselawat kepadanya', 'Tidak ikut sunnah', 'Bersikap sombong'], answer: 'Banyak berselawat kepadanya' },
+                    { bidang: 'Akidah', question: 'Malaikat diciptakan oleh Allah daripada...', options: ['Tanah', 'Api', 'Cahaya (Nur)', 'Air'], answer: 'Cahaya (Nur)' }
+                ]
+            },
+            {
+                id: 'set2', 
+                title: 'Set 2: Ujian Pencapaian 2',
+                desc: 'Soalan komprehensif menguji ingatan murid bagi keseluruhan DSKP Tahun 2.',
+                questions: [
+                    { bidang: 'Al-Quran', question: 'Lengkapkan ayat: وَمِن شَرِّ غَاسِقٍ إِذَا ______', options: ['وَقَبَ', 'حَسَدَ', 'خَلَقَ', 'الْعُقَدِ'], answer: 'وَقَبَ', isJawi: true },
+                    { bidang: 'Al-Quran', question: 'Apakah 3 huruf Mad Asli?', options: ['Sin, Syin, Sad', 'Alif, Waw, Ya', 'Ba, Ta, Sa', 'Mim, Nun, Wau'], answer: 'Alif, Waw, Ya' },
+                    { bidang: 'Al-Quran', question: 'Pilih kalimah yang mengandungi hukum wajibul ghunnah (Mim Sabdu).', options: ['ثُمَّ', 'مَنْ', 'كَمْ', 'عَنْ'], answer: 'ثُمَّ', isJawi: true },
+                    { bidang: 'Jawi', question: 'Berapakah suku kata bagi perkataan "Jururawat"?', options: ['2', '3', '4', '5'], answer: '4' },
+                    { bidang: 'Jawi', question: 'Pilih rangkai kata yang sesuai: Cermin ________.', options: ['Baju', 'Kasut', 'Mata', 'Buku'], answer: 'Mata' },
+                    { bidang: 'Jawi', question: 'Pilih ejaan Jawi yang betul bagi "Masjid".', options: ['مسجد', 'ماسجيد', 'مسجيد', 'میسجید'], answer: 'مسجد', isJawi: true },
+                    { bidang: 'Akidah', question: 'Lawan bagi sifat Allah Wujud (Ada) ialah...', options: ['Lemah', 'Mati', 'Tiada (Adam)', 'Jahil'], answer: 'Tiada (Adam)' },
+                    { bidang: 'Akidah', question: 'Sifat As-Samad bagi Allah bermaksud...', options: ['Maha Kuat', 'Maha Esa', 'Tempat Bergantung', 'Maha Melihat'], answer: 'Tempat Bergantung' },
+                    { bidang: 'Akidah', question: 'Malaikat yang bertugas mencatat amalan baik dan buruk ialah...', options: ['Munkar & Nakir', 'Raqib & Atid', 'Jibrail & Mikail', 'Malik & Ridhwan'], answer: 'Raqib & Atid' },
+                    { bidang: 'Ibadah', question: 'Istinja\' menggunakan batu sekurang-kurangnya memerlukan ___ batu / bucu batu.', options: ['1', '2', '3', '7'], answer: '3' },
+                    { bidang: 'Ibadah', question: 'Berikut adalah syarat SAH solat KECUALI...', options: ['Yakin masuk waktu', 'Menutup aurat', 'Menghadap kiblat', 'Makan kenyang'], answer: 'Makan kenyang' },
+                    { bidang: 'Ibadah', question: 'Ketika ruku\', kita disunatkan membaca tasbih: Subhana Rabbiyal ___', options: ['A\'la', 'Azim', 'Awwal', 'Hamid'], answer: 'Azim' },
+                    { bidang: 'Sirah', question: 'Air apakah yang digunakan oleh Malaikat Jibrail untuk menyucikan hati Nabi?', options: ['Air Sungai Nil', 'Air Hujan', 'Air Zamzam', 'Air Laut'], answer: 'Air Zamzam' },
+                    { bidang: 'Sirah', question: 'Sifat amanah Nabi Muhammad menyebabkan Siti Khadijah mengamanahkannya untuk membawa barang...', options: ['Dagangan', 'Cukai', 'Rompakan', 'Hadiah'], answer: 'Dagangan' },
+                    { bidang: 'Sirah', question: 'Bilal bin Rabah ialah sahabat Nabi yang terkenal sebagai...', options: ['Ketua tentera', 'Muazin (Tukang Azan)', 'Peniaga kaya', 'Penulis wahyu'], answer: 'Muazin (Tukang Azan)' },
+                    { bidang: 'Adab', question: 'Jika terlupa baca doa sebelum makan, kita disunatkan membaca...', options: ['Alhamdulillah', 'Bismillahi awwalahu wa akhirahu', 'Allahu Akbar', 'Subhanallah'], answer: 'Bismillahi awwalahu wa akhirahu' },
+                    { bidang: 'Adab', question: 'Hukum bergaduh sesama rakan Islam lebih daripada 3 hari adalah...', options: ['Haram / Berdosa', 'Makruh', 'Harus', 'Sunat'], answer: 'Haram / Berdosa' },
+                    { bidang: 'Adab', question: 'Masa yang paling mustajab untuk berdoa adalah...', options: ['Waktu tidur', 'Semasa main game', 'Selepas solat fardu', 'Waktu makan'], answer: 'Selepas solat fardu' },
+                    { bidang: 'Adab', question: 'Lafaz selawat yang paling ringkas dan lazim dibaca ialah...', options: ['Astaghfirullah', 'Sallallahu ala Muhammad', 'Alhamdulillah', 'Lailahaillallah'], answer: 'Sallallahu ala Muhammad' },
+                    { bidang: 'Ibadah', question: 'Lafaz salam pertama dalam solat hukumnya ialah...', options: ['Sunat', 'Harus', 'Rukun (Wajib)', 'Makruh'], answer: 'Rukun (Wajib)' }
+                ]
+            }
+        ];
+
+        const App = () => {
+            const [view, setView] = React.useState('home'); // home, bidang, unit, game, report, exam-menu, exam-engine, exam-result
+            
+            // Game Mode State
+            const [selectedBidang, setSelectedBidang] = React.useState(null);
+            const [selectedUnit, setSelectedUnit] = React.useState(null);
+            const [currentGameIndex, setCurrentGameIndex] = React.useState(0);
+            
+            // Progress State
+            const [score, setScore] = React.useState(0);
+            const [completedUnits, setCompletedUnits] = React.useState([]);
+
+            // Exam Mode State
+            const [currentExam, setCurrentExam] = React.useState(null);
+            const [examAnswers, setExamAnswers] = React.useState([]);
+            
+            const navigate = (newView, data = null) => {
+                if (data && data.bidang) setSelectedBidang(data.bidang);
+                if (data && data.unit) {
+                    setSelectedUnit(data.unit);
+                    setCurrentGameIndex(0);
+                }
+                if (data && data.exam) {
+                    setCurrentExam(data.exam);
+                    setExamAnswers(Array(data.exam.questions.length).fill(null));
+                }
+                setView(newView);
+                window.scrollTo(0,0);
+            };
+
+            const markUnitComplete = (unitId, earnedScore) => {
+                setScore(prev => prev + earnedScore);
+                if (!completedUnits.includes(unitId)) {
+                    setCompletedUnits(prev => [...prev, unitId]);
+                }
+            };
+
+            const renderHome = () => (
+                <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-gray-100">
+                    <div className="bg-white p-8 rounded-3xl shadow-xl text-center max-w-2xl w-full bounce-in border-4 border-primary">
+                        <h1 className="text-4xl md:text-5xl font-black text-primary mb-4 jawi-text">ڤينتر فنديديقن إسلام</h1>
+                        <h2 className="text-2xl font-bold text-gray-700 mb-8">Tahun 2 KPM</h2>
+                        
+                        <div className="flex justify-center space-x-4 mb-8">
+                            <div className="bg-yellow-100 p-4 rounded-xl shadow-inner text-center w-1/2">
+                                <span className="block text-3xl mb-1">⭐</span>
+                                <span className="font-bold text-yellow-600 text-xl">{score} Skor</span>
+                            </div>
+                            <div className="bg-green-100 p-4 rounded-xl shadow-inner text-center w-1/2 cursor-pointer hover:bg-green-200 transition" onClick={() => navigate('report')}>
+                                <span className="block text-3xl mb-1">📊</span>
+                                <span className="font-bold text-green-600 text-xl">Laporan</span>
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <h3 className="text-xl font-bold text-gray-800 bg-gray-200 py-2 rounded-t-xl">MOD LATIHAN (PERMAINAN)</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-gray-50 rounded-b-xl border-2 border-gray-200">
+                                {syllabusData.map((bidang) => (
+                                    <button 
+                                        key={bidang.id}
+                                        onClick={() => navigate('bidang', { bidang })}
+                                        className={`${bidang.color} text-white p-4 rounded-2xl shadow-md card-hover transform transition font-bold flex flex-col items-center justify-center h-28 border-b-4 border-black border-opacity-20`}
+                                    >
+                                        <span className="text-3xl mb-2">{bidang.icon}</span>
+                                        {bidang.title}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="text-xl font-bold text-white bg-red-500 py-2 rounded-t-xl">MOD PEPERIKSAAN</h3>
+                            <div className="p-4 bg-red-50 rounded-b-xl border-2 border-red-200 flex flex-col space-y-3">
+                                <p className="text-gray-600 text-sm mb-2 font-semibold">Uji kefahaman kamu dengan menjawab soalan tanpa bantuan.</p>
+                                <button 
+                                    onClick={() => navigate('exam-menu')}
+                                    className="bg-red-500 text-white px-6 py-4 rounded-full font-bold shadow-lg hover:bg-red-600 transition w-full text-lg animate-pulse"
+                                >
+                                    📝 Mula Ujian / Peperiksaan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderBidang = () => (
+                <div className="min-h-screen p-6 max-w-4xl mx-auto">
+                    <button onClick={() => navigate('home')} className="mb-6 bg-white px-4 py-2 rounded-full shadow-sm font-bold text-gray-600 hover:bg-gray-100 transition">
+                        <i className="fas fa-arrow-left mr-2"></i> Menu Utama
+                    </button>
+                    
+                    <div className={`${selectedBidang.color} text-white p-8 rounded-3xl shadow-lg mb-8 bounce-in flex items-center justify-between`}>
+                        <div>
+                            <h2 className="text-3xl font-black">{selectedBidang.title}</h2>
+                            <p className="opacity-90 mt-2">Pilih unit untuk mula bermain! Terdapat 10 soalan setiap unit.</p>
+                        </div>
+                        <span className="text-6xl">{selectedBidang.icon}</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {selectedBidang.units.map((unit, index) => {
+                            const isCompleted = completedUnits.includes(unit.id);
+                            return (
+                                <button 
+                                    key={unit.id}
+                                    onClick={() => navigate('game', { bidang: selectedBidang, unit })}
+                                    className={`bg-white p-6 rounded-2xl shadow-md border-2 card-hover text-left flex items-center justify-between
+                                        ${isCompleted ? 'border-green-400 bg-green-50' : 'border-transparent hover:border-primary'}`}
+                                >
+                                    <div>
+                                        <span className="text-sm font-bold text-gray-400">Unit {index + 1}</span>
+                                        <h3 className="text-xl font-bold text-gray-800 mt-1">{unit.title}</h3>
+                                        <span className="text-xs bg-gray-200 px-2 py-1 rounded text-gray-600 mt-2 inline-block">10 Aktiviti</span>
+                                    </div>
+                                    {isCompleted ? (
+                                        <span className="text-3xl text-green-500"><i className="fas fa-check-circle"></i></span>
+                                    ) : (
+                                        <span className="text-3xl text-gray-300"><i className="fas fa-play-circle"></i></span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+
+            const renderGame = () => {
+                if (!selectedUnit || !selectedUnit.games[currentGameIndex]) return navigate('home');
+                const gameData = selectedUnit.games[currentGameIndex];
+                const totalGames = selectedUnit.games.length;
+                
+                return (
+                    <div className="min-h-screen p-4 md:p-6 max-w-4xl mx-auto flex flex-col">
+                        <div className="flex justify-between items-center mb-6">
+                            <button onClick={() => navigate('bidang', { bidang: selectedBidang })} className="bg-white px-4 py-2 rounded-full shadow-sm font-bold text-gray-600 hover:bg-gray-100 transition">
+                                <i className="fas fa-arrow-left mr-2"></i> Kembali
+                            </button>
+                            <div className="bg-white px-4 py-2 rounded-full shadow-sm font-bold text-primary">
+                                Aktiviti {currentGameIndex + 1} / {totalGames}
+                            </div>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                            <div className="bg-primary h-2.5 rounded-full transition-all duration-500" style={{ width: `${((currentGameIndex) / totalGames) * 100}%` }}></div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl shadow-xl p-6 md:p-10 flex-grow flex flex-col bounce-in">
+                            <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center border-b-2 pb-4">
+                                {gameData.question}
+                            </h3>
+                            
+                            <div className="flex-grow flex flex-col justify-center">
+                                {gameData.type === 'quiz' && <QuizGame data={gameData} onComplete={handleGameComplete} key={currentGameIndex} />}
+                                {gameData.type === 'match' && <MatchGame data={gameData} onComplete={handleGameComplete} key={currentGameIndex} />}
+                                {gameData.type === 'sequence' && <SequenceGame data={gameData} onComplete={handleGameComplete} key={currentGameIndex} />}
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const handleGameComplete = (isSuccess) => {
+                if (isSuccess) {
+                    const isLastGame = currentGameIndex === selectedUnit.games.length - 1;
+                    
+                    const overlay = document.createElement('div');
+                    overlay.className = "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 bounce-in";
+                    overlay.innerHTML = `
+                        <div class="bg-white p-8 rounded-3xl text-center shadow-2xl max-w-sm mx-4 border-4 border-green-500">
+                            <div class="text-6xl mb-4">🌟</div>
+                            <h2 class="text-3xl font-bold text-green-600 mb-2">Hebat!</h2>
+                            <p class="text-gray-600 mb-6 font-bold">+10 Markah</p>
+                            <button id="nextBtn" class="bg-green-500 text-white px-8 py-3 rounded-full font-bold text-xl hover:bg-green-600 w-full">
+                                ${isLastGame ? 'Selesai Unit' : 'Seterusnya'}
+                            </button>
+                        </div>
+                    `;
+                    document.body.appendChild(overlay);
+                    
+                    document.getElementById('nextBtn').onclick = () => {
+                        document.body.removeChild(overlay);
+                        setScore(prev => prev + 10); 
+                        
+                        if (isLastGame) {
+                            markUnitComplete(selectedUnit.id, 0); 
+                            navigate('bidang', { bidang: selectedBidang });
+                        } else {
+                            setCurrentGameIndex(prev => prev + 1);
+                        }
+                    };
+                }
+            };
+
+            const renderReport = () => (
+                <div className="min-h-screen p-6 max-w-4xl mx-auto">
+                    <button onClick={() => navigate('home')} className="mb-6 bg-white px-4 py-2 rounded-full shadow-sm font-bold text-gray-600 hover:bg-gray-100 transition">
+                        <i className="fas fa-home mr-2"></i> Menu Utama
+                    </button>
+
+                    <div className="bg-white rounded-3xl shadow-xl p-8 bounce-in">
+                        <h2 className="text-3xl font-black text-center text-primary mb-8 border-b-4 border-yellow-400 pb-4 inline-block mx-auto">Laporan Pencapaian Murid</h2>
+                        
+                        <div className="flex flex-col md:flex-row justify-around items-center mb-10 bg-gray-50 p-6 rounded-2xl">
+                            <div className="text-center mb-6 md:mb-0">
+                                <div className="text-5xl font-black text-yellow-500">{score}</div>
+                                <div className="text-gray-600 font-bold uppercase tracking-wider text-sm mt-1">Jumlah Markah</div>
+                            </div>
+                            <div className="h-16 w-1 bg-gray-200 hidden md:block"></div>
+                            <div className="text-center">
+                                <div className="text-5xl font-black text-green-500">{completedUnits.length}</div>
+                                <div className="text-gray-600 font-bold uppercase tracking-wider text-sm mt-1">Lencana Terkumpul</div>
+                            </div>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-gray-800 mb-4">Kemajuan Bidang (Latihan)</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            {syllabusData.map(bidang => {
+                                const bidangUnitIds = bidang.units.map(u => u.id);
+                                const completedInBidang = completedUnits.filter(id => bidangUnitIds.includes(id)).length;
+                                const isFullyComplete = completedInBidang === bidang.units.length;
+                                
+                                return (
+                                    <div key={bidang.id} className={`p-4 rounded-2xl border-2 text-center ${isFullyComplete ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 bg-gray-50'}`}>
+                                        <div className={`text-4xl mb-2 ${isFullyComplete ? '' : 'grayscale opacity-50'}`}>🏆</div>
+                                        <div className="font-bold text-gray-700">{bidang.title}</div>
+                                        <div className="text-sm text-gray-500 mt-1">{completedInBidang} / {bidang.units.length} Unit</div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderExamMenu = () => (
+                <div className="min-h-screen p-6 max-w-4xl mx-auto flex flex-col items-center">
+                    <button onClick={() => navigate('home')} className="mb-6 self-start bg-white px-4 py-2 rounded-full shadow-sm font-bold text-gray-600 hover:bg-gray-100 transition">
+                        <i className="fas fa-arrow-left mr-2"></i> Menu Utama
+                    </button>
+
+                    <div className="bg-white rounded-3xl shadow-xl p-8 w-full text-center bounce-in">
+                        <div className="text-6xl mb-4">📝</div>
+                        <h2 className="text-4xl font-black text-red-600 mb-2">Mod Peperiksaan</h2>
+                        <p className="text-gray-600 mb-8 font-medium">Uji kefahaman kamu terhadap semua topik. Jawapan hanya akan disemak pada akhir peperiksaan.</p>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {examData.map((exam, index) => (
+                                <div key={exam.id} className="border-4 border-gray-100 hover:border-red-400 rounded-2xl p-6 transition transform hover:-translate-y-1 bg-gray-50 text-left">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <h3 className="text-2xl font-bold text-gray-800">{exam.title}</h3>
+                                        <span className="bg-red-100 text-red-600 font-bold px-3 py-1 rounded-full text-sm">{exam.questions.length} Soalan</span>
+                                    </div>
+                                    <p className="text-gray-600 text-sm mb-6 h-12">{exam.desc}</p>
+                                    <button 
+                                        onClick={() => navigate('exam-engine', { exam })}
+                                        className="w-full bg-red-500 text-white py-3 rounded-xl font-bold hover:bg-red-600 transition"
+                                    >
+                                        Mula Set {index + 1}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderExamEngine = () => {
+                if (!currentExam) return null;
+
+                const qIndex = currentGameIndex; // Using currentGameIndex to track exam question
+                const q = currentExam.questions[qIndex];
+                const isLast = qIndex === currentExam.questions.length - 1;
+                
+                const handleOptionClick = (opt) => {
+                    const newAnswers = [...examAnswers];
+                    newAnswers[qIndex] = opt;
+                    setExamAnswers(newAnswers);
+                };
+
+                const handleNext = () => {
+                    if (isLast) {
+                        navigate('exam-result');
+                    } else {
+                        setCurrentGameIndex(prev => prev + 1);
+                    }
+                };
+
+                const handlePrev = () => {
+                    if (qIndex > 0) setCurrentGameIndex(prev => prev - 1);
+                };
+
+                return (
+                    <div className="min-h-screen p-4 md:p-6 max-w-4xl mx-auto flex flex-col">
+                        <div className="flex justify-between items-center mb-6">
+                            <span className="bg-white px-4 py-2 rounded-full shadow-sm font-bold text-gray-600">
+                                {currentExam.title}
+                            </span>
+                            <div className="bg-white px-4 py-2 rounded-full shadow-sm font-bold text-red-500">
+                                Soalan {qIndex + 1} / {currentExam.questions.length}
+                            </div>
+                        </div>
+
+                        {/* Progress */}
+                        <div className="w-full bg-gray-300 rounded-full h-2 mb-6 flex">
+                            {currentExam.questions.map((_, i) => (
+                                <div key={i} className={`flex-1 h-full border-r border-white last:border-0 ${examAnswers[i] ? 'bg-red-500' : (i === qIndex ? 'bg-red-300' : 'bg-transparent')}`}></div>
+                            ))}
+                        </div>
+
+                        <div className="bg-white rounded-3xl shadow-xl p-6 md:p-10 flex-grow flex flex-col relative bounce-in">
+                            <div className="absolute top-0 right-8 bg-gray-800 text-white px-4 py-1 rounded-b-lg font-bold text-sm tracking-wider uppercase">
+                                {q.bidang}
+                            </div>
+                            
+                            <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mt-6 mb-8 text-center border-b-2 pb-4">
+                                {q.question}
+                            </h3>
+                            
+                            <div className="flex-grow flex flex-col justify-center space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {q.options.map((opt, i) => {
+                                        const isSelected = examAnswers[qIndex] === opt;
+                                        const isJawi = q.isJawi || /[\u0600-\u06FF]/.test(opt);
+                                        return (
+                                            <button 
+                                                key={i}
+                                                onClick={() => handleOptionClick(opt)}
+                                                className={`p-6 rounded-2xl text-xl font-bold transition-all border-2 
+                                                    ${isSelected ? 'bg-red-100 border-red-500 text-red-700 shadow-md transform scale-105' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'} 
+                                                    ${isJawi ? 'jawi-text text-center' : 'text-left'}`}
+                                            >
+                                                {opt}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <div className="mt-10 flex justify-between">
+                                <button 
+                                    onClick={handlePrev}
+                                    disabled={qIndex === 0}
+                                    className={`px-6 py-3 rounded-full font-bold ${qIndex === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-800 text-white hover:bg-gray-700'}`}
+                                >
+                                    Sebelumnya
+                                </button>
+                                
+                                <button 
+                                    onClick={handleNext}
+                                    disabled={!examAnswers[qIndex] && !isLast} // Force answer unless it's last (prevent skipping, or allow skip? Let's force answer to prevent accidental skips)
+                                    className={`px-8 py-3 rounded-full font-bold text-white transition ${!examAnswers[qIndex] ? 'bg-gray-300 cursor-not-allowed' : (isLast ? 'bg-green-500 hover:bg-green-600 pulse-correct' : 'bg-red-500 hover:bg-red-600')}`}
+                                >
+                                    {isLast ? 'Hantar Peperiksaan' : 'Seterusnya'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderExamResult = () => {
+                if (!currentExam) return null;
+
+                let correctCount = 0;
+                const weakFields = {};
+                
+                currentExam.questions.forEach((q, i) => {
+                    if (!weakFields[q.bidang]) weakFields[q.bidang] = { total: 0, wrong: 0 };
+                    weakFields[q.bidang].total += 1;
+                    
+                    if (examAnswers[i] === q.answer) {
+                        correctCount++;
+                    } else {
+                        weakFields[q.bidang].wrong += 1;
+                    }
+                });
+
+                const totalQ = currentExam.questions.length;
+                const percentage = Math.round((correctCount / totalQ) * 100);
+                
+                let gradeMsg = "Cuba lagi!";
+                let gradeColor = "text-red-500";
+                if (percentage >= 80) { gradeMsg = "Cemerlang!"; gradeColor = "text-green-500"; }
+                else if (percentage >= 50) { gradeMsg = "Baik!"; gradeColor = "text-yellow-500"; }
+
+                const areasToImprove = Object.keys(weakFields).filter(field => weakFields[field].wrong > 0);
+
+                return (
+                    <div className="min-h-screen p-6 max-w-4xl mx-auto flex flex-col items-center">
+                        <div className="bg-white rounded-3xl shadow-xl p-8 w-full bounce-in">
+                            <h2 className="text-3xl font-black text-center text-gray-800 mb-2">Keputusan Peperiksaan</h2>
+                            <h3 className="text-lg font-bold text-center text-gray-500 mb-8">{currentExam.title}</h3>
+                            
+                            <div className="flex flex-col items-center justify-center mb-10">
+                                <div className={`text-6xl font-black ${gradeColor} mb-2`}>{percentage}%</div>
+                                <div className={`text-2xl font-bold ${gradeColor}`}>{gradeMsg}</div>
+                                <div className="text-gray-600 font-medium mt-2">Betul {correctCount} daripada {totalQ} soalan</div>
+                            </div>
+
+                            {areasToImprove.length > 0 && (
+                                <div className="bg-red-50 p-6 rounded-2xl border-2 border-red-200 mb-8">
+                                    <h4 className="font-bold text-red-800 mb-3 flex items-center"><i className="fas fa-exclamation-triangle mr-2"></i> Bidang Perlu Ulang Kaji:</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {areasToImprove.map(field => (
+                                            <span key={field} className="bg-white border border-red-300 text-red-600 px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+                                                {field} ({weakFields[field].wrong} Salah)
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            <h4 className="font-bold text-gray-800 mb-4 text-xl border-b pb-2">Semakan Jawapan</h4>
+                            <div className="space-y-4 mb-8 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                                {currentExam.questions.map((q, i) => {
+                                    const isCorrect = examAnswers[i] === q.answer;
+                                    const isJawiAns = q.isJawi || /[\u0600-\u06FF]/.test(q.answer);
+                                    return (
+                                        <div key={i} className={`p-4 rounded-xl border-2 ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                                            <div className="flex items-start">
+                                                <div className={`text-2xl mr-4 mt-1 ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+                                                    {isCorrect ? <i className="fas fa-check-circle"></i> : <i className="fas fa-times-circle"></i>}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="font-bold text-gray-800 mb-2">{i+1}. {q.question}</p>
+                                                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+                                                        <span className="text-sm text-gray-500">Jawapan anda: </span>
+                                                        <span className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-600'} ${isJawiAns ? 'jawi-text' : ''}`}>
+                                                            {examAnswers[i] || 'Tidak dijawab'}
+                                                        </span>
+                                                    </div>
+                                                    {!isCorrect && (
+                                                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-1">
+                                                            <span className="text-sm text-gray-500">Jawapan sebenar: </span>
+                                                            <span className={`font-bold text-green-700 ${isJawiAns ? 'jawi-text' : ''}`}>{q.answer}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <button 
+                                onClick={() => navigate('exam-menu')}
+                                className="w-full bg-gray-800 text-white py-4 rounded-full font-bold text-lg hover:bg-gray-700 transition"
+                            >
+                                Kembali ke Menu Peperiksaan
+                            </button>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div>
+                    {view === 'home' && renderHome()}
+                    {view === 'bidang' && renderBidang()}
+                    {view === 'game' && renderGame()}
+                    {view === 'report' && renderReport()}
+                    {view === 'exam-menu' && renderExamMenu()}
+                    {view === 'exam-engine' && renderExamEngine()}
+                    {view === 'exam-result' && renderExamResult()}
+                </div>
+            );
+        };
+
+        const QuizGame = ({ data, onComplete }) => {
+            const [selected, setSelected] = React.useState(null);
+            const [status, setStatus] = React.useState(null); 
+
+            const handleSelect = (option) => {
+                if (status === 'correct') return;
+                setSelected(option);
+                
+                if (option === data.answer) {
+                    setStatus('correct');
+                    setTimeout(() => onComplete(true), 1500);
+                } else {
+                    setStatus('wrong');
+                    setTimeout(() => { setSelected(null); setStatus(null); }, 1000);
+                }
+            };
+
+            return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {data.options.map((opt, i) => {
+                        let btnClass = "bg-blue-50 hover:bg-blue-100 text-blue-900 border-2 border-blue-200";
+                        if (selected === opt) {
+                            if (status === 'correct') btnClass = "bg-green-500 text-white border-green-600 pulse-correct";
+                            if (status === 'wrong') btnClass = "bg-red-500 text-white border-red-600 shake-wrong";
+                        }
+                        
+                        const isJawi = data.isJawiAnswer || /[\u0600-\u06FF]/.test(opt);
+
+                        return (
+                            <button 
+                                key={i}
+                                onClick={() => handleSelect(opt)}
+                                className={`p-6 rounded-2xl text-xl font-bold transition-all transform hover:-translate-y-1 ${btnClass} ${isJawi ? 'jawi-text text-center' : ''}`}
+                            >
+                                {opt}
+                            </button>
+                        );
+                    })}
+                </div>
+            );
+        };
+
+        const MatchGame = ({ data, onComplete }) => {
+            const [leftItems, setLeftItems] = React.useState([]);
+            const [rightItems, setRightItems] = React.useState([]);
+            
+            React.useEffect(() => {
+                const left = data.pairs.map(p => ({ id: Math.random(), text: p.a, matchKey: p.a }));
+                const right = data.pairs.map(p => ({ id: Math.random(), text: p.b, matchKey: p.a }));
+                setLeftItems(left.sort(() => Math.random() - 0.5));
+                setRightItems(right.sort(() => Math.random() - 0.5));
+            }, [data]);
+
+            const [selectedLeft, setSelectedLeft] = React.useState(null);
+            const [selectedRight, setSelectedRight] = React.useState(null);
+            const [matchedKeys, setMatchedKeys] = React.useState([]);
+            const [errorState, setErrorState] = React.useState(false);
+
+            React.useEffect(() => {
+                if (selectedLeft && selectedRight) {
+                    if (selectedLeft.matchKey === selectedRight.matchKey) {
+                        const newMatches = [...matchedKeys, selectedLeft.matchKey];
+                        setMatchedKeys(newMatches);
+                        setSelectedLeft(null);
+                        setSelectedRight(null);
+                        
+                        if (newMatches.length === data.pairs.length) {
+                            setTimeout(() => onComplete(true), 1000);
+                        }
+                    } else {
+                        setErrorState(true);
+                        setTimeout(() => {
+                            setSelectedLeft(null);
+                            setSelectedRight(null);
+                            setErrorState(false);
+                        }, 800);
+                    }
+                }
+            }, [selectedLeft, selectedRight]);
+
+            return (
+                <div className={`grid grid-cols-2 gap-4 md:gap-12 ${errorState ? 'shake-wrong' : ''}`}>
+                    <div className="flex flex-col space-y-4">
+                        {leftItems.map((item) => {
+                            const isMatched = matchedKeys.includes(item.matchKey);
+                            const isSelected = selectedLeft?.id === item.id;
+                            const isJawi = /[\u0600-\u06FF]/.test(item.text);
+                            return (
+                                <button 
+                                    key={item.id}
+                                    onClick={() => !isMatched && setSelectedLeft(item)}
+                                    className={`p-4 rounded-xl font-bold border-2 text-center transition-all min-h-[80px] flex items-center justify-center
+                                        ${isMatched ? 'matched' : isSelected ? 'selected-match bg-amber-50' : 'bg-white hover:bg-gray-50 border-gray-200'}
+                                        ${isJawi ? 'jawi-text' : 'text-lg text-gray-700'}`}
+                                >
+                                    {item.text}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    <div className="flex flex-col space-y-4">
+                        {rightItems.map((item) => {
+                            const isMatched = matchedKeys.includes(item.matchKey);
+                            const isSelected = selectedRight?.id === item.id;
+                            const isJawi = /[\u0600-\u06FF]/.test(item.text);
+                            return (
+                                <button 
+                                    key={item.id}
+                                    onClick={() => !isMatched && setSelectedRight(item)}
+                                    className={`p-4 rounded-xl font-bold border-2 text-center transition-all min-h-[80px] flex items-center justify-center
+                                        ${isMatched ? 'matched' : isSelected ? 'selected-match bg-amber-50' : 'bg-white hover:bg-gray-50 border-gray-200'}
+                                        ${isJawi ? 'jawi-text' : 'text-lg text-gray-700'}`}
+                                >
+                                    {item.text}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        const SequenceGame = ({ data, onComplete }) => {
+            const [shuffledItems, setShuffledItems] = React.useState([]);
+            const [userSequence, setUserSequence] = React.useState([]);
+            
+            React.useEffect(() => {
+                const items = data.items.map(item => ({ id: Math.random(), text: item }));
+                setShuffledItems(items.sort(() => Math.random() - 0.5));
+                setUserSequence(Array(data.items.length).fill(null));
+            }, [data]);
+
+            const handlePick = (item) => {
+                const firstEmpty = userSequence.findIndex(s => s === null);
+                if (firstEmpty !== -1) {
+                    const newSeq = [...userSequence];
+                    newSeq[firstEmpty] = item;
+                    setUserSequence(newSeq);
+                    setShuffledItems(shuffledItems.filter(i => i.id !== item.id));
+                }
+            };
+
+            const handleRemove = (index) => {
+                const item = userSequence[index];
+                if (item) {
+                    const newSeq = [...userSequence];
+                    newSeq[index] = null;
+                    setUserSequence(newSeq);
+                    setShuffledItems([...shuffledItems, item]);
+                }
+            };
+
+            const checkAnswer = () => {
+                const currentAns = userSequence.map(i => i ? i.text : null);
+                const isCorrect = currentAns.every((val, index) => val === data.answer[index]);
+                if (isCorrect) {
+                    onComplete(true);
+                } else {
+                    const items = data.items.map(item => ({ id: Math.random(), text: item }));
+                    setShuffledItems(items.sort(() => Math.random() - 0.5));
+                    setUserSequence(Array(data.items.length).fill(null));
+                    
+                    const container = document.getElementById('sequence-container');
+                    if (container) {
+                        container.classList.add('shake-wrong');
+                        setTimeout(() => container.classList.remove('shake-wrong'), 500);
+                    }
+                }
+            };
+
+            const allFilled = userSequence.every(i => i !== null);
+
+            return (
+                <div id="sequence-container" className="flex flex-col items-center">
+                    <div className="w-full bg-blue-50 p-4 rounded-2xl min-h-[100px] mb-8 flex flex-wrap justify-center gap-3">
+                        {shuffledItems.map(item => {
+                            const isJawi = /[\u0600-\u06FF]/.test(item.text);
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => handlePick(item)}
+                                    className={`bg-white border-2 border-blue-300 px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-blue-100 transition-colors ${isJawi ? 'jawi-text' : ''}`}
+                                >
+                                    {item.text}
+                                </button>
+                            );
+                        })}
+                        {shuffledItems.length === 0 && <span className="text-gray-400 font-bold self-center">Susun di bawah 👇</span>}
+                    </div>
+
+                    <div className="w-full flex flex-col space-y-3 mb-6" dir={/[\u0600-\u06FF]/.test(data.answer[0]) ? 'rtl' : 'ltr'}>
+                        {userSequence.map((item, index) => {
+                            return (
+                                <div 
+                                    key={index} 
+                                    onClick={() => handleRemove(index)}
+                                    className={`w-full min-h-[60px] border-4 border-dashed rounded-xl flex items-center justify-center p-3 cursor-pointer transition-colors
+                                        ${item ? 'border-primary bg-indigo-50 border-solid shadow-md' : 'border-gray-300 bg-gray-50'}`}
+                                >
+                                    {item ? (
+                                        <span className={`font-bold ${/[\u0600-\u06FF]/.test(item.text) ? 'jawi-text text-primary' : 'text-gray-800'}`}>
+                                            {item.text}
+                                        </span>
+                                    ) : (
+                                        <span className="text-gray-300 text-sm font-bold">Ruang {index + 1}</span>
+                                    )}
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    {allFilled && (
+                        <button 
+                            onClick={checkAnswer}
+                            className="bg-primary text-white px-8 py-3 rounded-full font-bold text-xl shadow-lg hover:bg-indigo-700 transition pulse-correct"
+                        >
+                            Semak Jawapan
+                        </button>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
